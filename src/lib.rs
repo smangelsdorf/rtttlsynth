@@ -30,7 +30,9 @@ pub fn run() {
         let time = if note.dotted { time * 1.5 } else { time };
 
         match note.pitch {
-            None => {}
+            None => {
+                output.silence(time * tempo_step);
+            }
             Some(pitch) => {
                 let freq = fundamental(pitch, octave);
                 output.play(freq, time * tempo_step);
