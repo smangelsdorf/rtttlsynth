@@ -2,6 +2,8 @@ use rodio::{source::Zero, OutputStream, Sink, Source};
 
 use crate::synth::SawWave;
 
+const NOTE_GAP: f32 = 0.01;
+
 pub struct OutputContext {
     sink: Sink,
 
@@ -13,8 +15,13 @@ pub struct OutputContext {
 impl OutputContext {
     pub fn play(&self, freq: f32, secs: f32) {
         let source = SawWave::new(freq)
-            .take_duration(std::time::Duration::from_secs_f32(secs))
+            .take_duration(std::time::Duration::from_secs_f32(secs - NOTE_GAP))
             .amplify(0.20);
+
+        self.sink.append(source);
+
+        let source =
+            Zero::<f32>::new(1, 48_000).take_duration(std::time::Duration::from_secs_f32(NOTE_GAP));
 
         self.sink.append(source);
     }
