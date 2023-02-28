@@ -3,7 +3,7 @@ use std::{iter::Sum, str::FromStr};
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_till1},
-    character::complete::{digit1, one_of, space0},
+    character::complete::{digit1, multispace0, one_of},
     combinator::{eof, map, map_parser, map_res, opt, recognize, value},
     multi::separated_list1,
     sequence::{delimited, preceded, terminated, tuple},
@@ -23,11 +23,11 @@ where
 }
 
 fn section_separator(input: &str) -> IResult<&str, ()> {
-    value((), delimited(space0, tag(":"), space0)).parse(input)
+    value((), delimited(multispace0, tag(":"), multispace0)).parse(input)
 }
 
 fn item_separator(input: &str) -> IResult<&str, ()> {
-    value((), delimited(space0, tag(","), space0)).parse(input)
+    value((), delimited(multispace0, tag(","), multispace0)).parse(input)
 }
 
 fn name(input: &str) -> IResult<&str, &str> {
