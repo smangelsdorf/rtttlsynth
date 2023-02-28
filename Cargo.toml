@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 nom = "*"
-rodio = "*"
+rodio = { version = "*", default_features = false }
 
 [[bin]]
 bench = false
