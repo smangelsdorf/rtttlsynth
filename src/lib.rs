@@ -5,6 +5,7 @@ mod frequency;
 mod parser;
 mod ringtone;
 mod sound;
+mod synth;
 
 pub fn run() {
     let input =

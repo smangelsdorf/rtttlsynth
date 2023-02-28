@@ -1,7 +1,6 @@
-use rodio::{
-    source::{SineWave, Zero},
-    OutputStream, Sink, Source,
-};
+use rodio::{source::Zero, OutputStream, Sink, Source};
+
+use crate::synth::SawWave;
 
 pub struct OutputContext {
     sink: Sink,
@@ -13,7 +12,7 @@ pub struct OutputContext {
 
 impl OutputContext {
     pub fn play(&self, freq: f32, secs: f32) {
-        let source = SineWave::new(freq)
+        let source = SawWave::new(freq)
             .take_duration(std::time::Duration::from_secs_f32(secs))
             .amplify(0.20);
 
