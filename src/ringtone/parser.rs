@@ -10,7 +10,7 @@ use nom::{
     Finish, IResult, Parser,
 };
 
-use crate::ringtone::*;
+use super::*;
 
 fn base10_numeric<N>(input: &str) -> IResult<&str, N>
 where
@@ -162,7 +162,7 @@ fn ringtone(input: &str) -> IResult<&str, Ringtone> {
     .parse(input)
 }
 
-pub fn parse_input(input: &str) -> Result<Ringtone, Box<dyn std::error::Error>> {
+pub(super) fn parse_input(input: &str) -> Result<Ringtone, Box<dyn std::error::Error>> {
     let (_rest, ringtone) = ringtone.parse(input).map_err(|e| e.to_owned()).finish()?;
     Ok(ringtone)
 }

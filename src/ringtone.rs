@@ -1,14 +1,31 @@
+mod frequency;
+mod iterator;
+mod parser;
+
+pub use iterator::PlayedTone;
+
 pub struct Ringtone {
-    pub name: String,
-    pub settings: Settings,
-    pub notes: Vec<Note>,
+    #[allow(dead_code)]
+    name: String,
+    settings: Settings,
+    notes: Vec<Note>,
+}
+
+impl Ringtone {
+    pub fn parse(input: &str) -> Result<Ringtone, Box<dyn std::error::Error>> {
+        parser::parse_input(input)
+    }
+
+    pub fn iter<'a>(&'a self) -> impl Iterator<Item = PlayedTone> + 'a {
+        iterator::iter(self)
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct Settings {
-    pub duration: Duration,
-    pub octave: Octave,
-    pub tempo: Tempo,
+struct Settings {
+    duration: Duration,
+    octave: Octave,
+    tempo: Tempo,
 }
 
 impl Default for Settings {
@@ -23,7 +40,7 @@ impl Default for Settings {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum Duration {
+enum Duration {
     Whole = 1,
     Half = 2,
     Quarter = 4,
@@ -33,25 +50,25 @@ pub enum Duration {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Octave {
+enum Octave {
     O4,
     O5,
     O6,
     O7,
 }
 
-pub type Tempo = u16;
+type Tempo = u16;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct Note {
-    pub duration: Option<Duration>,
-    pub pitch: Option<Pitch>,
-    pub octave: Option<Octave>,
-    pub dotted: bool,
+struct Note {
+    duration: Option<Duration>,
+    pitch: Option<Pitch>,
+    octave: Option<Octave>,
+    dotted: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Pitch {
+enum Pitch {
     A,
     // Easier than coming up with a notation for A#, etc.
     Bb,

@@ -1,9 +1,9 @@
-use crate::ringtone::{Octave, Pitch};
+use super::{Octave, Pitch};
 
 const FREQ_A4: f32 = 440.0;
 const STEP: f32 = 1.059463094359;
 
-pub fn fundamental(pitch: Pitch, octave: Octave) -> f32 {
+pub(super) fn fundamental(pitch: Pitch, octave: Octave) -> f32 {
     let octave_multiplier = match octave {
         Octave::O4 => 1.0,
         Octave::O5 => 2.0,
