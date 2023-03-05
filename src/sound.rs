@@ -15,7 +15,7 @@ pub struct OutputContext {
 impl OutputContext {
     pub fn play(&self, freq: f32, secs: f32) {
         let saw = SawWave::new(freq);
-        let filtered = BandPassFilter::new(saw, 1.5, 2500.0);
+        let filtered = BandPassFilter::new(saw, 2.5, 2500.0);
 
         let source = filtered
             .take_duration(std::time::Duration::from_secs_f32(secs - NOTE_GAP))
