@@ -66,10 +66,12 @@ fn tempo(input: &str) -> IResult<&str, u16> {
     base10_numeric.parse(input)
 }
 
+#[derive(Clone, Copy)]
 enum Setting {
     Duration(Duration),
     Octave(Octave),
     Tempo(Tempo),
+    Ignored,
 }
 
 impl Setting {
@@ -81,6 +83,7 @@ impl Setting {
             },
             Setting::Octave(octave) => Settings { octave, ..settings },
             Setting::Tempo(tempo) => Settings { tempo, ..settings },
+            Setting::Ignored => settings,
         }
     }
 }
@@ -90,6 +93,8 @@ fn setting(input: &str) -> IResult<&str, Setting> {
         map(preceded(tag("d="), duration), Setting::Duration),
         map(preceded(tag("o="), octave), Setting::Octave),
         map(preceded(tag("b="), tempo), Setting::Tempo),
+        value(Setting::Ignored, preceded(tag("l="), base10_numeric::<u32>)),
+        value(Setting::Ignored, preceded(tag("s="), base10_numeric::<u32>)),
     ))
     .parse(input)
 }
@@ -319,7 +324,7 @@ mod tests {
 
     #[test]
     fn test_parse_input() {
-        let input = "Nokia: d=4,o=5,b=120: 16e6, 16d6, 8f#, 8g#, 16c#6, 16b, 8d, 8e, 16b, 16a, 8c#, 8e, 2a, 2p";
+        let input = "Nokia: d=4,o=5,b=120,l=5,s=4: 16e6, 16d6, 8f#, 8g#, 16c#6, 16b, 8d, 8e, 16b, 16a, 8c#, 8e, 2a, 2p";
 
         let ringtone = parse_input(input).expect("successful parse");
 
