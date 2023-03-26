@@ -1,8 +1,26 @@
 use ringtone::{PlayedTone, Ringtone};
+use wasm_bindgen::prelude::*;
 
 mod ringtone;
 mod sound;
 mod synth;
+
+#[wasm_bindgen]
+pub fn play(input: String) -> Result<(), String> {
+    let ringtone = Ringtone::parse(input.trim()).expect("valid input");
+    let output = sound::output();
+
+    for tone in ringtone.iter() {
+        match tone {
+            PlayedTone::Note { freq, duration } => output.play(freq, duration),
+            PlayedTone::Silence { duration } => output.silence(duration),
+        }
+    }
+
+    output.finish();
+
+    Ok(())
+}
 
 pub fn run() {
     let input = r"

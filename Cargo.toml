@@ -1,15 +1,22 @@
 [package]
+edition = "2021"
 name = "rtttlsynth"
 version = "0.1.0"
-edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 nom = "*"
-rodio = { version = "*", default_features = false }
+rodio = {version = "*", default_features = false, features = ["wasm-bindgen"]}
+wasm-bindgen = "*"
 
 [[bin]]
 bench = false
 name = "rtttlsynth"
 test = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+lto = true
