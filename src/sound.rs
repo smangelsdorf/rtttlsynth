@@ -1,8 +1,6 @@
 use rodio::{source::Zero, OutputStream, Sink, Source};
 
-use crate::synth::{BandPassFilter, SawWave};
-
-const NOTE_GAP: f32 = 0.01;
+use crate::synth::{ADSROptions, BandPassFilter, SawWave};
 
 pub struct OutputContext {
     sink: Sink,
@@ -15,16 +13,13 @@ pub struct OutputContext {
 impl OutputContext {
     pub fn play(&self, freq: f32, secs: f32) {
         let saw = SawWave::new(freq);
-        let filtered = BandPassFilter::new(saw, 2.5, 2500.0);
+        let filtered = BandPassFilter::new(saw, 1.5, 3500.0);
+        let filtered = BandPassFilter::new(filtered, 1.5, 3200.0);
+        let filtered = BandPassFilter::new(filtered, 1.5, 2800.0);
 
-        let source = filtered
-            .take_duration(std::time::Duration::from_secs_f32(secs - NOTE_GAP))
+        let source = ADSROptions::new(0.0, 0.0, 1.0, 0.005)
+            .envelope(filtered, secs)
             .amplify(0.20);
-
-        self.sink.append(source);
-
-        let source =
-            Zero::<f32>::new(1, 48_000).take_duration(std::time::Duration::from_secs_f32(NOTE_GAP));
 
         self.sink.append(source);
     }
