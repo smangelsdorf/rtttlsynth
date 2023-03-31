@@ -12,7 +12,7 @@ wasm-bindgen = "*"
 
 [[bin]]
 bench = false
-name = "rtttlsynth"
+name = "rtttlsynth_test"
 test = false
 
 [lib]
