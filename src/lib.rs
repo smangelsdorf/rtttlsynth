@@ -22,6 +22,10 @@ pub fn play(input: String) -> Result<(), String> {
     Ok(())
 }
 
+#[cfg(target_arch = "wasm32")]
+pub fn run() {}
+
+#[cfg(not(target_arch = "wasm32"))]
 pub fn run() {
     let input = r"
         Badinerie:d=16,o=5,b=210,l=15:
