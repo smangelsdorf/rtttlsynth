@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+textarea#audio_input {
+    min-width: 500px;
+    width: 80%;
+    height: 200px;
+    font-size: 1.25em;
+    resize: none;
+    margin: 2em 0;
+}
+
+button#play {
+    background-color: rgb(0, 101, 196);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.25em;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    margin-bottom: 2em;
+}
+
+button#play:before {
+    content: "▶";
+    margin-right: 0.5em;
+}
+
+#examples {
+    border: 1px solid #000;
+    max-width: 80%;
+    font-family: "Courier New", monospace;
+    font-size: 0.8em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#examples ul {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+
+#examples li:hover {
+    cursor: pointer;
+    background: rgb(148, 202, 253);
+}
+
+#examples li+li {
+    margin-top: 2em;
+}
