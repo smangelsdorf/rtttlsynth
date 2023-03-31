@@ -16,7 +16,7 @@ current_commit_hash=$(git rev-parse $target_branch)
 export GIT_INDEX_FILE=$(mktemp)
 git read-tree --empty
 
-files=(index.html rtttlsynth.js rtttlsynth_bg.wasm)
+files=(index.html styles.css rtttlsynth.js rtttlsynth_bg.wasm)
 for file in "${files[@]}"; do
   git update-index --add --cacheinfo 100644 "$(git hash-object -w "static/$file")" "$file"
 done
