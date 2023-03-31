@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Player</title>
+    <script type="module">
+        import init, * as wasm_bindgen from './rtttlsynth.js';
+
+        async function main() {
+            await init();
+
+            document.getElementById("play").addEventListener("click", async () => {
+                const audioString = document.getElementById("audio_input").value;
+                await wasm_bindgen.play(audioString);
+            });
+
+            document.getElementById("stop").addEventListener("click", async () => {
+                // Stop the audio playback
+            });
+        }
+
+        main();
+    </script>
+</head>
+
+<body>
+    <input type="text" id="audio_input" placeholder="Enter audio string">
+    <button id="play">Play</button>
+    <button id="stop">Stop</button>
+</body>
+
+</html>
