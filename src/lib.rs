@@ -1,5 +1,4 @@
 use ringtone::{PlayedTone, Ringtone};
-use std::io::Read;
 use wasm_bindgen::prelude::*;
 
 mod ringtone;
