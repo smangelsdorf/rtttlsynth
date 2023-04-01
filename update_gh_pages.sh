@@ -10,6 +10,11 @@ set -u
 cargo build --release --target=wasm32-unknown-unknown
 wasm-bindgen --target web --out-dir static/ target/wasm32-unknown-unknown/release/rtttlsynth.wasm
 
+# Bail out if the `--dry-run` argument was given
+if [[ "$1" = "--dry-run" ]]; then
+  exit 0
+fi
+
 target_branch="gh-pages"
 current_commit_hash=$(git rev-parse $target_branch)
 
