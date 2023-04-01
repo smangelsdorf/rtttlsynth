@@ -14,6 +14,10 @@ pub fn play(input: String) -> Result<(), String> {
     // Set up the output device.
     let output = sound::output();
 
+    // WebAudio has an initial "squeak" to the sound when it starts playing instantly. 10ms of
+    // silence seems to be enough to fix it.
+    output.silence(0.01);
+
     // Play each tone in sequence.
     for tone in ringtone.iter() {
         match tone {
