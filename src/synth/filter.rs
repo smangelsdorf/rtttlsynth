@@ -1,7 +1,16 @@
 use rodio::Source;
 
-// Based on https://www.w3.org/TR/audio-eq-cookbook/
-
+/// Band pass filter implementation based on the Audio EQ Cookbook at:
+///
+/// https://www.w3.org/TR/audio-eq-cookbook/
+/// See: "BPF (constant skirt gain, peak gain = Q)"
+///
+/// The choice of filter algorithm is based on the sound of the early Nokia devices. Due to the
+/// hardware limitations and the construction of the handset, there was a natural resonance and
+/// filtering inherent in the physical device. This filter attempts to replicate that sound.
+///
+/// For more information on the filter design and coefficients, please refer to the Audio EQ
+/// Cookbook linked above.
 pub struct BandPassFilter<S>
 where
     S: Source<Item = f32>,
@@ -24,6 +33,7 @@ where
     S: Source<Item = f32>,
 {
     pub fn new(s: S, q: f32, fc: f32) -> BandPassFilter<S> {
+        // Filter math lies herein.
         let fs = s.sample_rate() as f32;
         let wc = std::f32::consts::PI * 2.0 * fc / fs;
 
@@ -81,6 +91,7 @@ where
         } = self;
         let x = self.source.next()?;
 
+        // Apply coefficients, update samples, and return the result.
         let y = b0 * x + b1 * *x_n1 + b2 * *x_n2 - a1 * *y_n1 - a2 * *y_n2;
 
         *x_n2 = *x_n1;

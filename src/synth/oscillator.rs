@@ -1,5 +1,8 @@
 use rodio::Source;
 
+/// Simple saw wave oscillator. One of the primitive waveforms.
+///
+/// https://en.wikipedia.org/wiki/Waveform
 #[derive(Clone, Debug)]
 pub struct SawWave {
     #[allow(dead_code)]
@@ -10,6 +13,9 @@ pub struct SawWave {
 
 impl SawWave {
     pub fn new(freq: f32) -> Self {
+        // At our fixed sample rate, we need to go through the range of [-1.0, 1.0] for each cycle
+        // of the wave. So, we double it in the multiplier to go from [0.0, 1.0] to [0.0, 2.0], and
+        // then subtract 1.0 below to get the range we want.
         let mult = 2.0 * freq / 48000.0;
         SawWave {
             freq,
@@ -25,6 +31,7 @@ impl Iterator for SawWave {
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         self.num_sample = self.num_sample.wrapping_add(1);
+        // Linear increase at each step, and then using the remainder to wrap around.
         Some((self.mult * self.num_sample as f32).rem_euclid(2.0) - 1.0)
     }
 }

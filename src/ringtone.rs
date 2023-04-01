@@ -4,6 +4,9 @@ mod parser;
 
 pub use iterator::PlayedTone;
 
+/// A ringtone is a sequence of notes and silences.
+///
+/// This is the top level structure containing the parsed ringtone.
 pub struct Ringtone {
     #[allow(dead_code)]
     name: String,
@@ -21,6 +24,7 @@ impl Ringtone {
     }
 }
 
+/// The default settings for a ringtone, inherited by any notes that don't override them.
 #[derive(Debug, PartialEq, Eq)]
 struct Settings {
     duration: Duration,
@@ -38,6 +42,7 @@ impl Default for Settings {
     }
 }
 
+/// Note duration, relative to the tempo.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
 enum Duration {
@@ -49,6 +54,7 @@ enum Duration {
     ThirtySecond = 32,
 }
 
+/// Octave of the note.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Octave {
     O4,
@@ -57,8 +63,17 @@ enum Octave {
     O7,
 }
 
+/// Tempo of a ringtone.
+///
+/// In the original implementation this is more restrictive (i.e. the Nokia phones have a list of
+/// discrete tempos that they can handle), but we'll take any u16 and do our best. YMMV at the
+/// extremes.
 type Tempo = u16;
 
+/// A single note or silence.
+///
+/// When the duration or octave is `None`, the default value from the ringtone settings is used. If
+/// the pitch is `None`, the note is a silence.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct Note {
     duration: Option<Duration>,
@@ -67,6 +82,7 @@ struct Note {
     dotted: bool,
 }
 
+/// The pitch of a note within an octave.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Pitch {
     A,

@@ -1,9 +1,19 @@
 use super::{Octave, Pitch};
 
+/// The standard frequency of A4 in Nokia phones. This is the reference frequency for all other
+/// notes.
+///
+/// A440 is the most common tuning for the A note.
 const FREQ_A4: f32 = 440.0;
+
+/// The frequency multiplier for each step in the chromatic scale, based on 12 tone equal
+/// temperament.
+///
+/// https://en.wikipedia.org/wiki/12_equal_temperament
 const STEP: f32 = 1.059463094359;
 
 pub(super) fn fundamental(pitch: Pitch, octave: Octave) -> f32 {
+    // Each octave shift doubles the frequency.
     let octave_multiplier = match octave {
         Octave::O4 => 1.0,
         Octave::O5 => 2.0,
@@ -11,6 +21,8 @@ pub(super) fn fundamental(pitch: Pitch, octave: Octave) -> f32 {
         Octave::O7 => 8.0,
     };
 
+    // Each pitch shift is a step in the chromatic scale, so we multiply by a power of the step
+    // multiplier.
     let pitch_multiplier = match pitch {
         Pitch::A => 1.0,
         Pitch::Bb => STEP.powi(1),
@@ -40,6 +52,7 @@ mod tests {
             assert!(diff < 0.1, "{freq} differs from {expected}");
         }
 
+        // Sanity check the frequency calculations.
         check(fundamental(Pitch::A, Octave::O4), 440.0);
         check(fundamental(Pitch::Ab, Octave::O5), 830.61);
         check(fundamental(Pitch::F, Octave::O4), 349.23);

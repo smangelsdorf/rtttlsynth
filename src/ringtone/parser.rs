@@ -12,6 +12,7 @@ use nom::{
 
 use super::*;
 
+/// Generic base 10 numeric parser, used in a few places.
 fn base10_numeric<N>(input: &str) -> IResult<&str, N>
 where
     N: Sum<N> + FromStr,
@@ -22,18 +23,22 @@ where
     .parse(input)
 }
 
+/// The `:` character separating the name from the settings, and the settings from the notes.
 fn section_separator(input: &str) -> IResult<&str, ()> {
     value((), delimited(multispace0, tag(":"), multispace0)).parse(input)
 }
 
+/// The `,` character separating notes in the ringtone.
 fn item_separator(input: &str) -> IResult<&str, ()> {
     value((), delimited(multispace0, tag(","), multispace0)).parse(input)
 }
 
+/// Freeform name before the first `:` separator.
 fn name(input: &str) -> IResult<&str, &str> {
     take_till1(|c| c == ':').parse(input)
 }
 
+/// The numeric notation for note duration, mapped into the `Duration` enum.
 fn duration(input: &str) -> IResult<&str, Duration> {
     map_parser(
         digit1,
@@ -49,6 +54,7 @@ fn duration(input: &str) -> IResult<&str, Duration> {
     .parse(input)
 }
 
+/// The numeric notation for octave, mapped into the `Octave` enum.
 fn octave(input: &str) -> IResult<&str, Octave> {
     map_parser(
         digit1,
@@ -62,10 +68,13 @@ fn octave(input: &str) -> IResult<&str, Octave> {
     .parse(input)
 }
 
+/// Tempo value in beats per minute.
 fn tempo(input: &str) -> IResult<&str, u16> {
     base10_numeric.parse(input)
 }
 
+/// Intermediate enum for parsing the settings section. This allows type safety while we build up
+/// the list of settings that are specified, since they're not necessarily ordered.
 #[derive(Clone, Copy)]
 enum Setting {
     Duration(Duration),
@@ -75,6 +84,7 @@ enum Setting {
 }
 
 impl Setting {
+    /// Fold function for consuming a list of settings and building up the final `Settings`.
     fn put(settings: Settings, setting: Setting) -> Settings {
         match setting {
             Setting::Duration(duration) => Settings {
@@ -88,6 +98,9 @@ impl Setting {
     }
 }
 
+/// A single component from the settings section of the ringtone. We ignore `l=` and `s=` values
+/// because they aren't part of the standard (at least on Wikipedia), but it's convenient when
+/// pasting ringtones from other sources.
 fn setting(input: &str) -> IResult<&str, Setting> {
     alt((
         map(preceded(tag("d="), duration), Setting::Duration),
@@ -99,6 +112,7 @@ fn setting(input: &str) -> IResult<&str, Setting> {
     .parse(input)
 }
 
+/// The settings section of the ringtone, which can be specified in any order.
 fn settings(input: &str) -> IResult<&str, Settings> {
     map(separated_list1(item_separator, setting), |list| {
         list.into_iter().fold(Settings::default(), Setting::put)
@@ -106,6 +120,9 @@ fn settings(input: &str) -> IResult<&str, Settings> {
     .parse(input)
 }
 
+/// Note pitch value, mapped into the `Pitch` enum. The `p` value is used for a rest. The weird
+/// mismatch here is that RTTTL specifies sharp notes with a `#` suffix, but to make our internal
+/// representation easier, we use the flat equivalent instead.
 fn pitch(input: &str) -> IResult<&str, Option<Pitch>> {
     map_res(
         tuple((one_of("abcdefgp"), opt(tag("#")))),
@@ -129,6 +146,7 @@ fn pitch(input: &str) -> IResult<&str, Option<Pitch>> {
     .parse(input)
 }
 
+/// A single note in the ringtone.
 fn note(input: &str) -> IResult<&str, Note> {
     map(
         tuple((
@@ -147,10 +165,12 @@ fn note(input: &str) -> IResult<&str, Note> {
     .parse(input)
 }
 
+/// A list of notes in the ringtone.
 fn notes(input: &str) -> IResult<&str, Vec<Note>> {
     separated_list1(item_separator, note).parse(input)
 }
 
+/// The entire ringtone, which consists of a name, settings, and a list of notes.
 fn ringtone(input: &str) -> IResult<&str, Ringtone> {
     map(
         tuple((
@@ -167,6 +187,7 @@ fn ringtone(input: &str) -> IResult<&str, Ringtone> {
     .parse(input)
 }
 
+///  Runs the parser on the input and returns the parsed ringtone.
 pub(super) fn parse_input(input: &str) -> Result<Ringtone, Box<dyn std::error::Error>> {
     let (_rest, ringtone) = ringtone.parse(input).map_err(|e| e.to_owned()).finish()?;
     Ok(ringtone)
