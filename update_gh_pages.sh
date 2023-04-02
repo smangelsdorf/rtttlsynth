@@ -11,7 +11,7 @@ cargo build --release --target=wasm32-unknown-unknown
 wasm-bindgen --target web --out-dir static/ target/wasm32-unknown-unknown/release/rtttlsynth.wasm
 
 # Bail out if the `--dry-run` argument was given
-if [[ "$1" = "--dry-run" ]]; then
+if [[ "${1:-}" = "--dry-run" ]]; then
   exit 0
 fi
 
@@ -33,3 +33,4 @@ unset GIT_INDEX_FILE
 
 new_commit_hash=$(git commit-tree $tree_hash -p $current_commit_hash -m "Build from latest source")
 git update-ref "refs/heads/$target_branch" $new_commit_hash
+git show $new_commit_hash
