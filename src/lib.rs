@@ -1,3 +1,5 @@
+use std::io::Read;
+
 use ringtone::{PlayedTone, Ringtone};
 use wasm_bindgen::prelude::*;
 
@@ -43,6 +45,7 @@ pub fn run() {
 #[cfg(not(target_arch = "wasm32"))]
 pub fn run() {
     // Consume all of stdin to a string.
+
     let mut input = String::new();
     std::io::stdin()
         .read_to_string(&mut input)
