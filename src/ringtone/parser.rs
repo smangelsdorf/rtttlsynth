@@ -148,18 +148,21 @@ fn pitch(input: &str) -> IResult<&str, Option<Pitch>> {
 
 /// A single note in the ringtone.
 fn note(input: &str) -> IResult<&str, Note> {
+    // Some ringtones place the `.` before the octave, so we allow either placement of it. The spec
+    // says it should be after the octave.
     map(
         tuple((
             opt(duration),
             pitch,
+            map(opt(tag(".")), |o| o.is_some()),
             opt(octave),
             map(opt(tag(".")), |o| o.is_some()),
         )),
-        |(duration, pitch, octave, dotted)| Note {
+        |(duration, pitch, dotted0, octave, dotted1)| Note {
             duration,
             pitch,
             octave,
-            dotted,
+            dotted: dotted0 || dotted1,
         },
     )
     .parse(input)
@@ -305,6 +308,19 @@ mod tests {
 
         assert_eq!(
             note("8c#7."),
+            Ok((
+                "",
+                Note {
+                    duration: Some(Duration::Eighth),
+                    pitch: Some(Pitch::Db),
+                    octave: Some(Octave::O7),
+                    dotted: true,
+                },
+            ))
+        );
+
+        assert_eq!(
+            note("8c#.7"),
             Ok((
                 "",
                 Note {
