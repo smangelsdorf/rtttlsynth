@@ -201,7 +201,7 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_20(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h29a586259b12d7cb(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3f31bde3d4c41e16(arg0, arg1);
 }
 
 /**
@@ -341,6 +341,10 @@ function getImports() {
         const ret = getObject(arg0).resume();
         return addHeapObject(ret);
     }, arguments) };
+    imports.wbg.__wbg_maxChannelCount_3d204a9727fbe5e5 = function(arg0) {
+        const ret = getObject(arg0).maxChannelCount;
+        return ret;
+    };
     imports.wbg.__wbindgen_number_new = function(arg0) {
         const ret = arg0;
         return addHeapObject(ret);
@@ -354,6 +358,9 @@ function getImports() {
     imports.wbg.__wbg_start_9169e040a16354b9 = function() { return handleError(function (arg0, arg1) {
         getObject(arg0).start(arg1);
     }, arguments) };
+    imports.wbg.__wbg_setchannelCount_a6e04bb813a69a87 = function(arg0, arg1) {
+        getObject(arg0).channelCount = arg1 >>> 0;
+    };
     imports.wbg.__wbg_connect_77f2f818a74097e1 = function() { return handleError(function (arg0, arg1) {
         const ret = getObject(arg0).connect(getObject(arg1));
         return addHeapObject(ret);
@@ -415,7 +422,7 @@ function getImports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper231 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper227 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 94, __wbg_adapter_20);
         return addHeapObject(ret);
     };
