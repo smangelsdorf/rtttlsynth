@@ -5,10 +5,14 @@ mod ringtone;
 mod sound;
 mod synth;
 
+fn err_to_string(e: Box<dyn std::error::Error>) -> String {
+    e.to_string()
+}
+
 #[wasm_bindgen]
 pub fn play(input: String) -> Result<(), String> {
     // Parse, and panic if the parse fails.
-    let ringtone = Ringtone::parse(input.trim()).map_err(|e| e.to_string())?;
+    let ringtone = Ringtone::parse(input.trim()).map_err(err_to_string)?;
 
     // Set up the output device.
     let output = sound::output();
